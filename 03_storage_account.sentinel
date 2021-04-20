@@ -1,0 +1,35 @@
+import "tfplan/v2" as tfplan
+
+
+azure_storage_accounts = filter tfplan.resource_changes as _, resource_changes {
+    resource_changes.type is "azurerm_storage_account" and
+        resource_changes.mode is "managed" and
+        (resource_changes.change.actions contains "create" or
+            resource_changes.change.actions is ["update"])
+}
+
+deny_undefined_network_rules = rule {
+// Write an evaluation to ensure that network_rules have been set on the azurerm_storage_account resource
+}
+
+if deny_undefined_network_rules {
+	print("Network rules have been set")
+} else {
+	print("Azure SQL instances require network rules to be set as per https://wiki.yourcompany/azure_sql")
+}
+
+allowedIPAddresses = [
+	"100.0.0.1",
+]
+
+// Write an evaluation that ensures only the allowed IP addresses defined above are included in the network rules set against this storage account. 
+// NOTE: This evaluation should only run if the network rule check returned true. 
+
+if INSERT_RULE_NAME_HERE {
+	print("Network access to SQL instances policy pass.")
+} else {
+	print("Opening Azure SQL to external IP Addresses outside of the company range requires security review. To remove this requirement please ensure your public access IP addresses are from this range: https://wiki.yourcompany.com/sql_IP_addresses")
+}
+
+
+// Write the main rule evaluation that takes into account both of your former rules

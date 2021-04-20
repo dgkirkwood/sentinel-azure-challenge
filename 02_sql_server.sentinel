@@ -1,0 +1,22 @@
+import "tfplan/v2" as tfplan
+
+
+azure_sql_servers = filter tfplan.resource_changes as _, resource_changes {
+// Write a filter that will look for instances of azurerm_mssql_server within the Terraform Plan
+}
+
+
+db_name_check = rule {
+	all azure_sql_servers as _, servers {
+		servers.change.after.name matches "(hashicorp)(-)(payments|digital|data)(-)([a-zA-Z0-9]{6,12})"
+	}
+}
+
+if db_name_check {
+// Write a print statement that gives meaningful feedback to your end users.
+}
+
+
+main = rule {
+	db_name_check
+}

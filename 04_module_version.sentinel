@@ -1,0 +1,1 @@
+// Write a Sentinel policy that uses TFConfig to ensure that users are consuming versions of the appservices module above 0.0.1

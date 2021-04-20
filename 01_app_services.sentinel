@@ -1,0 +1,26 @@
+import "tfplan/v2" as tfplan
+
+
+azure_app_service = filter tfplan.resource_changes as _, resource_changes {
+    resource_changes.type is "azurerm_app_service" and
+        resource_changes.mode is "managed" and
+        (resource_changes.change.actions contains "create" or
+            resource_changes.change.actions is ["update"])
+}
+
+
+allow_https_only = rule {
+	all azure_app_service as _, service {
+		service.change.after.https_only is true
+	}
+}
+
+if allow_https_only {
+	print("HTTPS policy passed.")
+} else {
+	print("Your application must have HTTPS only enabled otherwise it will be delayed for security review. Set https_only=true to bypass this review.")
+}
+
+main = rule {
+    allow_https_only
+}
