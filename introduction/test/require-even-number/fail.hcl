@@ -1,5 +1,5 @@
 param "the_number" {
-     value = insert_odd_number
+     value = 13
 }
 
 test {

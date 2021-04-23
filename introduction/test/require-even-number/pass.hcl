@@ -1,5 +1,5 @@
 param "the_number" {
-     value = insert_even_number
+     value = 22
 }
 
 test {
